@@ -1,0 +1,114 @@
+name: Monthly Security Audit
+
+on:
+  schedule:
+    - cron: "0 12 1 * *"
+
+jobs:
+  security_node_audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run yarn audit
+        run: |
+          yarn audit || echo "audit_result=vulnerabilities_found" >> $GITHUB_OUTPUT
+        id: audit
+        continue-on-error: true
+
+      - name: Notify if vulnerabilities found
+        id: slack
+        if: steps.audit.outcome == 'success' && steps.audit.outputs.audit_result == 'vulnerabilities_found'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "channel": "#alerts",
+              "username": "Security Audit",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Vulnerabilities were found in the project*\n Run `yarn audit` locally to see the list of vulnerabilities."
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Vulnerabilities:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run here>"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+  
+  security_composer_audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: cache-db
+        with:
+            path: ~/.symfony/cache
+            key: db
+      - uses: symfonycorp/security-checker-action@v4
+        id: security-check
+        with:
+            disable-exit-code: 1
+
+      - name: Notify if vulnerabilities found
+        id: slack
+        if: steps.security-check.outputs.vulns.length > 0
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "channel": "#alerts",
+              "username": "Security Audit",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Vulnerabilities were found in the project*\n Run `composer audit` locally to see the list of vulnerabilities."
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n<https://github.com/${{ github.repository }}|${{ github.repository }}>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Vulnerabilities:*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run here>"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
