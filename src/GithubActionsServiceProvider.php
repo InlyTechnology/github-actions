@@ -22,7 +22,7 @@ class GithubActionsServiceProvider extends PackageServiceProvider
     public function bootingPackage()
     {
         $this->publishes([
-            $this->package->basePath('/stubs') => base_path('/'),
+            $this->package->basePath('/../stubs') => base_path('/'),
         ], 'laravel-assets'); 
     }
 }
