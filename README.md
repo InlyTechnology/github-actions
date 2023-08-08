@@ -15,10 +15,10 @@ You can install the package via composer:
 composer require inly/github-actions
 ```
 
-You can publish the actions with:
+You can publish and update the actions with:
 
 ```bash
-php artisan vendor:publish --tag="laravel-assets"
+php artisan vendor:publish --tag="github-actions" --force
 ```
 
 ## Changelog
