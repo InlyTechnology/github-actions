@@ -1,3 +1,6 @@
+# Generate from inly/github-actions
+# Updates should be done there, changes here might be overwritten
+
 name: dependabot-auto-merge
 on: pull_request_target
 

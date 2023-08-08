@@ -23,6 +23,6 @@ class GithubActionsServiceProvider extends PackageServiceProvider
     {
         $this->publishes([
             $this->package->basePath('/../stubs') => base_path('/'),
-        ], "{$this->package->shortName()}"); 
+        ]); 
     }
 }

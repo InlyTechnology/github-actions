@@ -18,7 +18,7 @@ composer require inly/github-actions
 You can publish and update the actions with:
 
 ```bash
-php artisan vendor:publish --tag="github-actions" --force
+php artisan vendor:publish --provider="Inly\GithubActions\GithubActionsServiceProvider" --force
 ```
 
 ## Changelog
