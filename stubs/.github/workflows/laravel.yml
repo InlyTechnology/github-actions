@@ -3,13 +3,7 @@
 
 name: Laravel
 
-on:
-  # Commits made in Duster Fix will not trigger any workflows
-  # This workflow is configured to run after Duster finishes
-  workflow_run:
-    workflows: ["Duster Fix"]
-    types:
-      - completed
+on: [push, pull_request]
 
 jobs:
   laravel-tests:
