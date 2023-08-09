@@ -1,4 +1,6 @@
-<div align="center"><img src="https://inly.se/github.png" alt="Inly"/></div>
+<a href="https://inly.se" target="_blank" align="center">
+<img src="https://inly.se/github.png" alt="Inly"/>
+</a>
 <br />
 
 # Default Github Actions for Inly
