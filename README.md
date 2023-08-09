@@ -12,7 +12,7 @@
 You can install the package via composer:
 
 ```bash
-composer require inly/github-actions
+composer require --dev inly/github-actions
 ```
 
 You can publish and update the actions with:
