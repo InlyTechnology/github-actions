@@ -4,6 +4,7 @@
 name: Monthly Security Audit
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 12 1 * *"
 
